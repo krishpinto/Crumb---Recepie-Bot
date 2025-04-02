@@ -1,34 +1,52 @@
+"use client";
+
+import React, { useState } from "react";
 import { GoogleGenAI } from "@google/genai";
-import * as fs from "node:fs";
 
-async function main() {
+const CookieRecipes = () => {
+  const [userInput, setUserInput] = useState<string>(""); // State for user input
+  const [responseText, setResponseText] = useState<string | null>(null); // State for API response
 
-  const ai = new GoogleGenAI({ apiKey: "GEMINI_API_KEY" });
+  const fetchRecipes = async () => {
+    const ai = new GoogleGenAI({
+      apiKey: "AIzaSyDBnfjAHRKYzeTOq-wETbJ4hkXNPdwLAns",
+    });
 
-  const contents =
-    "Hi, can you create a 3d rendered image of a pig " +
-    "with wings and a top hat flying over a happy " +
-    "futuristic scifi city with lots of greenery?";
+    const prompt = `List a few popular recipes based on the input "${userInput}" using this JSON schema:
 
-  // Set responseModalities to include "Image" so the model can generate  an image
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-exp-image-generation",
-    contents: contents,
-    config: {
-      responseModalities: ["Text", "Image"],
-    },
-  });
-  for (const part of response.candidates[0].content.parts) {
-    // Based on the part type, either show the text or save the image
-    if (part.text) {
-      console.log(part.text);
-    } else if (part.inlineData) {
-      const imageData = part.inlineData.data;
-      const buffer = Buffer.from(imageData, "base64");
-      fs.writeFileSync("gemini-native-image.png", buffer);
-      console.log("Image saved as gemini-native-image.png");
+        Recipe = {'recipeName': string}
+        Return: Array<Recipe>`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt,
+      });
+      setResponseText(response.text ?? null);
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      setResponseText("Failed to fetch recipes.");
     }
-  }
-}
+  };
 
-main();
+  return (
+    <div>
+      <h1>Recipes</h1>
+      <input
+        type="text"
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)} // Update userInput state on change
+        placeholder="Enter a keyword for recipes"
+      />
+      <button onClick={fetchRecipes}>Fetch Recipes</button>
+      {responseText && (
+        <div>
+          <h2>Response:</h2>
+          <pre>{responseText}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CookieRecipes;
