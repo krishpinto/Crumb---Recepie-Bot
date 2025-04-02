@@ -1,9 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = "AIzaSyDBnfjAHRKYzeTOq-wETbJ4hkXNPdwLAns";
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error('GEMINI_API_KEY is not set in environment variables');
+}
 
 export const fetchRecipesAPI = async (userInput: string) => {
-  const ai = new GoogleGenAI({ apiKey: "AIzaSyDBnfjAHRKYzeTOq-wETbJ4hkXNPdwLAns" });
+  const ai = new GoogleGenAI({ apiKey: apiKey });
 
   const prompt = `List a few popular recipes based on the input "${userInput}" using this JSON schema:
 
@@ -33,7 +36,7 @@ export const fetchRecipesAPI = async (userInput: string) => {
 };
 
 export const fetchIngredientsAPI = async (recipeName: string) => {
-    const ai = new GoogleGenAI({ apiKey: "AIzaSyDBnfjAHRKYzeTOq-wETbJ4hkXNPdwLAns" });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
 
   const prompt = `Provide the ingredients required for the recipe "${recipeName}" using this JSON schema:
 
