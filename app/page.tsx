@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import SearchBar from "@/components/search-bar";
 import RecipeResults from "@/components/recipe-results";
+import Footer from "@/components/Footer"; // Import the Footer component
 import { fetchRecipesAPI, fetchIngredientsAPI } from "../utils/api";
 
 export default function Home() {
@@ -34,7 +35,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
+    <main className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex flex-col justify-between">
       <div className="container mx-auto px-4 py-16">
         <div className="flex flex-col items-center justify-center">
           <h1 className="mb-8 text-4xl font-bold text-orange-800 md:text-5xl lg:text-6xl">
@@ -82,6 +83,8 @@ export default function Home() {
           )}
         </div>
       </div>
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }
